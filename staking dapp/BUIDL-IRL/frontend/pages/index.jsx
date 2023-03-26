@@ -19,8 +19,8 @@ export default function Home() {
           {address ? (
             <div>
               <TokenBal />
-              <StakedNft />
-              <UnstakedNft />
+              <StakedNFT />
+              <UnstakedNFT />
             </div>
           ) : (
             <div className="flex justify-center">
