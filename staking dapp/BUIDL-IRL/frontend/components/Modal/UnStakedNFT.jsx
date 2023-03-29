@@ -4,19 +4,20 @@ import NFTCard from "../Cards/NFTCard";
 import { useAccount, useContract, useSigner } from "wagmi";
 
 const UnstakedNft = () => {
-  const [nfts, setNfts] = useState();
+  const [nfts, setNfts] = useState([]);
   const { address } = useAccount();
   const { data: signer } = useSigner();
-
   const nftContract = useContract({
     address: NFTAbi.address,
     abi: NFTAbi.abi,
     signerOrProvider: signer,
   });
+
   useEffect(() => {
     if (address) {
       const getNFTs = async () => {
         try {
+          setNfts([])
           const tx1 = await nftContract?.balanceOf(address);
           const index = tx1.toNumber();
           for (let i = 0; i < index; i++) {
@@ -28,7 +29,6 @@ const UnstakedNft = () => {
           console.log(err);
         }
       };
-
       getNFTs();
     }
   }, [address, nftContract]);
@@ -36,10 +36,9 @@ const UnstakedNft = () => {
   return (
     <div className="flex flex-col mx-auto text-center">
       <h2 className="text-2xl">Your NFTs</h2>
-      <div className="flex flex-wrap mx-auto my-7"></div>
       <div className="flex flex-wrap mx-auto my-7">
         {nfts.map((nft, id) => (
-          <NFTCard key={id} url={nfts} stake={true} tokenId={nfts.tokenId} />
+          <NFTCard key={id} url={nft.url} stake={true} tokenId={nft.tokenId} />
         ))}
       </div>
     </div>

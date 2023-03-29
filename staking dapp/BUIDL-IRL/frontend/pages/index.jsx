@@ -1,7 +1,7 @@
 import Head from "next/head";
 import TokenBal from "@/components/Modal/TokenBal";
-import StakedNft from "@/components/Modal/StakedNFT";
-import UnstakedNft from "@/components/Modal/UnstakedNFT";
+import StakedNFT from "@/components/Modal/StakedNFT";
+import UnstakedNFT from "@/components/Modal/UnstakedNFT";
 import { useAccount } from "wagmi";
 
 export default function Home() {

@@ -4,11 +4,9 @@ import NFTAbi from "@/ABIs/BuidlNFT.json";
 import StakingAbi from "@/ABIs/Staking.json";
 import { useAccount, useContract, useSigner } from "wagmi";
 
-const NFTCard = ({ nfts, stake, tokenId }) => {
-
-  const [nfts, setNfts] = useState([]);
-  const { address } = useAccount();
+const NFTCard = ({ url, stake, tokenId }) => {
   const { data: signer } = useSigner();
+  const { address } = useAccount();
 
   const [nft, setNft] = useState({
     name: "",
@@ -16,7 +14,6 @@ const NFTCard = ({ nfts, stake, tokenId }) => {
     desc: "",
     tokenID: tokenId,
   });
-
   const stakingContract = useContract({
     address: StakingAbi.address,
     abi: StakingAbi.abi,
@@ -27,7 +24,21 @@ const NFTCard = ({ nfts, stake, tokenId }) => {
     abi: NFTAbi.abi,
     signerOrProvider: signer,
   });
+  const getData = async () => {
+    try {
+      const res = await fetch(url);
+      const data = await res.json();
 
+      setNft({
+        name: data.name,
+        image: data.image,
+        desc: data.description,
+        tokenID: tokenId,
+      });
+    } catch (err) {
+      console.log(err);
+    }
+  };
   const stakeNft = async () => {
     try {
       const approve = await nftContract?.isApprovedForAll(
@@ -64,29 +75,29 @@ const NFTCard = ({ nfts, stake, tokenId }) => {
       console.log(err);
     }
   };
-  useEffect(() => {
-    const getData = async () => {
-      try {
-        const tx1 = await nftContract?.balanceOf(address);
-        const index = tx1.toNumber();
-        for (let i = 0; i < index; i++) {
-          const res = await fetch(nfts.url);
-          const data = await res.json();
-        }
-        const res = await fetch(nfts.url);
-        const data = await res.json();
 
-        setNft({
-          name: data.name,
-          image: data.image,
-          desc: data.description,
-          tokenID: tokenId,
-        });
-      } catch (err) {
-        console.log(err);
-      }
-    };
-  }, [tokenId, nfts.url]);
+  const getIPFSUrl = url => url.replace("ipfs://", "https://ipfs.io/ipfs/")
+
+  useEffect(() => {
+    if (url) {
+      const getData = async () => {
+        try {
+          const res = await fetch(url);
+          const data = await res.json();
+
+          setNft({
+            name: data.name,
+            image: data.image,
+            desc: data.description,
+            tokenID: tokenId,
+          });
+        } catch (err) {
+          console.log(err);
+        }
+      };
+      getData();
+    }
+  }, [tokenId, url]);
 
   return (
     <div>
@@ -94,7 +105,7 @@ const NFTCard = ({ nfts, stake, tokenId }) => {
         <div>
           <section className="text-center max-w-fit border px-3  rounded-md border-[#ffffff82] shadow-lg mx-2 hover:scale-105">
             <h2 className="text-2xl my-2">{nft.name}</h2>
-            <Image src={nft.image ? nft.image : "/deafult.jpg"} alt={nft.name} width={200} height={400} />
+            <Image src={getIPFSUrl(nft.image)} alt={nft.name} width={200} height={400} />
             <h2 className="text-md text-[#ffffffbe] mt-2">{nft.desc}</h2>
             <button
               className="bg-[#524ffffb] px-3 py-1 my-3 rounded-md font-medium mb-3 w-[60%] text-lg hover:scale-105"
@@ -108,7 +119,7 @@ const NFTCard = ({ nfts, stake, tokenId }) => {
         <div>
           <section className="text-center max-w-fit border px-3  rounded-md border-[#ffffff82] shadow-lg hover:scale-105">
             <h2 className="text-2xl my-2">{nft.name}</h2>
-            <Image src={nft.image ? nft.image : "/deafult.jpg"} alt={nft.name} width={200} height={400} />
+            <Image src={getIPFSUrl(nft.image)} alt={nft.name} width={200} height={400} />
             <h2 className="text-md text-[#ffffffbe] mt-2">{nft.desc}</h2>
             <button
               className="bg-[#ff0909] px-3 py-1 my-3 rounded-md font-medium mb-3 w-[60%] text-lg hover:scale-105"

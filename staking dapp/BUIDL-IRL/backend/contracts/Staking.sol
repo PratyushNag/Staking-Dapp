@@ -8,7 +8,7 @@ import "./BuidlToken.sol";
 
 contract Staking is ERC721Holder {
     /// @notice NFT contract
-    IERC721 public buidlNFT;
+    IERC721 public MintProductNFT;
 
     /// @notice Token contract
     BuidlToken public buidlToken;
@@ -29,7 +29,7 @@ contract Staking is ERC721Holder {
     /// @param nft  NFT contract address
     /// @param token Token contract address
     constructor(address nft, address token) {
-        buidlNFT = IERC721(nft);
+        MintProductNFT = IERC721(nft);
         buidlToken = BuidlToken(token);
     }
 
@@ -37,8 +37,8 @@ contract Staking is ERC721Holder {
     /// This will transfer the NFT to the contract, and start the staking timer for the user.
     /// @param tokenId Token ID of the NFT to stake
     function stakeNFT(uint256 tokenId) external {
-        require(buidlNFT.ownerOf(tokenId) == msg.sender, "ERR:NO");
-        buidlNFT.safeTransferFrom(msg.sender, address(this), tokenId);
+        require(MintProductNFT.ownerOf(tokenId) == msg.sender, "ERR:NO");
+        MintProductNFT.safeTransferFrom(msg.sender, address(this), tokenId);
         tokenStakedAt[msg.sender] = block.timestamp;
         stakeTokenId[msg.sender] = tokenId;
     }
@@ -58,7 +58,7 @@ contract Staking is ERC721Holder {
         require(stakeTokenId[msg.sender] == tokenId, "ERR:NY");
         uint256 rewardAmount = calculateReward(msg.sender);
 
-        buidlNFT.safeTransferFrom(address(this), msg.sender, tokenId);
+        MintProductNFT.safeTransferFrom(address(this), msg.sender, tokenId);
 
         buidlToken.mintToken(msg.sender, rewardAmount);
 

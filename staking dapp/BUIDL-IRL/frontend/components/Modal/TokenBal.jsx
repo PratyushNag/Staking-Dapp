@@ -1,22 +1,22 @@
 import React, { useEffect, useState } from "react";
 import TokenAbi from "@/ABIs/BuidlToken.json";
 import StakingAbi from "@/ABIs/Staking.json";
-import { useAccount, useContract, useProvider } from "wagmi";
+import { useAccount, useContract, useSigner } from "wagmi";
 import { ethers } from "ethers";
 
 const TokenBal = () => {
-  const provider = useProvider();
+  const { data: signer } = useSigner();
   const { address } = useAccount();
 
   const tokenContract = useContract({
     address: TokenAbi.address,
     abi: TokenAbi.abi,
-    signerOrProvider: provider,
+    signerOrProvider: signer,
   })
   const stakingContract = useContract({
     address: StakingAbi.address,
     abi: StakingAbi.abi,
-    signerOrProvider: provider,
+    signerOrProvider: signer,
   });
 
   const [tokenBal, setTokenBal] = useState("0");

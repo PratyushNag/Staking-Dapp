@@ -6,8 +6,8 @@ async function main() {
   console.log("Account balance:", (await deployer.getBalance()).toString());
 
   try {
-    const NFT = await ethers.getContractFactory("BuidlNFT");
-    const nft = await NFT.deploy("BuidlNFT", "BN");
+    const NFT = await ethers.getContractFactory("MintProductNFT");
+    const nft = await NFT.deploy("MintNFT", "MNF");
     await nft.deployed();
     console.log("NFT Contract Address:", nft.address);
 
@@ -23,7 +23,7 @@ async function main() {
 
     await hre.run("verify:verify", {
       address: nft.address,
-      constructorArguments: ["BuidlNFT", "BN"],
+      constructorArguments: ["MintProductNFT", "MNF"],
     });
 
     await hre.run("verify:verify", {

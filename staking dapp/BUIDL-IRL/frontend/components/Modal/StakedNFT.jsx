@@ -2,25 +2,23 @@ import React, { useEffect, useState } from "react";
 import NFTCard from "../Cards/NFTCard";
 import NFTAbi from "@/ABIs/BuidlNFT.json";
 import StakingAbi from "@/ABIs/Staking.json";
-import { useAccount, useContract, useSigner, useProvider } from "wagmi";
+import { useAccount, useContract, useSigner } from "wagmi";
 import { ethers } from "ethers";
 
 
 const StakedNft = () => {
-  const [nfts, setNfts] = useState([]);
   const { address } = useAccount();
   const { data: signer } = useSigner();
-  const provider = useProvider();
 
   const stakingContract = useContract({
     address: StakingAbi.address,
     abi: StakingAbi.abi,
-    signerOrProvider: provider,
+    signerOrProvider: signer,
   });
   const nftContract = useContract({
     address: NFTAbi.address,
     abi: NFTAbi.abi,
-    signerOrProvider: provider,
+    signerOrProvider: signer,
   });
 
   const [rewardBal, setRewardBal] = useState();
